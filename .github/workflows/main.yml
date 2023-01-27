@@ -4,6 +4,15 @@ name: "Build and Deploy"
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
+        
+        permissions:
+          # required for all workflows
+          security-events: write
+
+          # only required for workflows in private repositories
+          actions: read
+          contents: read
+          
         steps:
         # checkout the repo
         - name: 'Checkout GitHub Action'
@@ -24,15 +33,15 @@ jobs:
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
+        - name: Checkout repository
+          uses: actions/checkout@v3
+
+          # Initializes the CodeQL tools for scanning.
         - name: Initialize CodeQL
           uses: github/codeql-action/init@v2
-          with:
-            languages: go, javascript
 
-        # Here is where you build your code
-        - run: |
-            make bootstrap
-            make release
+        - name: Autobuild
+          uses: github/codeql-action/autobuild@v2
 
         - name: Perform CodeQL Analysis
           uses: github/codeql-action/analyze@v2
