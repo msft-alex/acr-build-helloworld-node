@@ -1,5 +1,5 @@
 on: [push]
-name: "Code Scanning - Action"
+name: "CodeQL Scan"
 
 # on:
 #   push:
