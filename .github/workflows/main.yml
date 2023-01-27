@@ -24,6 +24,19 @@ jobs:
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
 
+        - name: Initialize CodeQL
+          uses: github/codeql-action/init@v2
+          with:
+            languages: go, javascript
+
+        # Here is where you build your code
+        - run: |
+            make bootstrap
+            make release
+
+        - name: Perform CodeQL Analysis
+          uses: github/codeql-action/analyze@v2
+  
         - name: 'Deploy to Azure Container Instances'
           uses: 'azure/aci-deploy@v1'
           with:
