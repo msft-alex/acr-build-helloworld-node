@@ -1,5 +1,5 @@
 on: [push]
-name: Build_and_Deploy
+name: "Build and Deploy"
 
 jobs:
     build-and-deploy:
